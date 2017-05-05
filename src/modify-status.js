@@ -53,6 +53,7 @@ module.exports = (text, token) => {
 		var statusText = getStatusEmojiAndText(text, unicodeCount).statusText;
 		encodedJSON = 'token='.concat(token, '&profile=', encodeURIComponent('{"status_text":"'.concat(statusText, '","status_emoji":":', emoji.which(statusEmoji), ':"}')));
 	}
+	console.log('encoded profile URI component');
 	console.log(encodedJSON);
 	slackApi.sendResponse('slack.com/api/users.profile.set', encodedJSON);
 };
