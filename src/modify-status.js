@@ -6,7 +6,7 @@ var parseText = function (text) {
 	var unicodeCount = 0;
 	for (var i = 0; i < text.length; i += 1)
 	{
-		if (text.codePointAt(i) > 255)
+		if (text.codePointAt(i) > 255 && unicodeCount < 2)
 		{
 			unicodeCount += 1;
 		}
@@ -53,5 +53,5 @@ module.exports = (text, token) => {
 		var statusText = getStatusEmojiAndText(text, unicodeCount).statusText;
 		encodedJSON = 'token='.concat(token, '&profile=', encodeURIComponent('{"status_text":"'.concat(statusText, '","status_emoji":":', emoji.which(statusEmoji), ':"}')));
 	}
-	slackApi.sendResponse('slack.com/api/users.profile.set', encodedJSON);
+	return slackApi.sendResponse('slack.com/api/users.profile.set', encodedJSON);
 };
