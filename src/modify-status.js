@@ -39,7 +39,7 @@ var getStatusEmojiAndText = function (text, unicodeCount) {
 	}
 	else
 	{
-		// Status Emoji not specified at beginning of text, error
+		// Status Emoji not specified at beginning of text or no emoji at all, return empty strings
 	}
 	return { statusEmoji: statusEmoji, statusText: statusText };
 }
@@ -51,7 +51,10 @@ module.exports = (text, token) => {
 		var unicodeCount = parseText(text);
 		var statusEmoji = getStatusEmojiAndText(text, unicodeCount).statusEmoji;
 		var statusText = getStatusEmojiAndText(text, unicodeCount).statusText;
-		encodedJSON = 'token='.concat(token, '&profile=', encodeURIComponent('{"status_text":"'.concat(statusText, '","status_emoji":":', emoji.which(statusEmoji), ':"}')));
+		if (statusEmoji !== '')
+		{
+			encodedJSON = 'token='.concat(token, '&profile=', encodeURIComponent('{"status_text":"'.concat(statusText, '","status_emoji":":', emoji.which(statusEmoji), ':"}')));
+		}
 	}
 	return slackApi.sendResponse('slack.com/api/users.profile.set', encodedJSON);
 };
