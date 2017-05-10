@@ -6,7 +6,7 @@ var getDefaultStatus = function () {
 		status_text: 'Working from home',
 		status_emoji: ':house_with_garden:'
 	}
-		return status;
+	return status;
 }
 
 var getBlankStatus = function () {
