@@ -1,60 +1,60 @@
 var slackApi = require('./slack-api');
 var emoji = require('node-emoji');
 
-var parseText = function (text) {
+var status = {
+    status_text: 'Working from Home',
+    status_emoji: ':house_with_garden:'
+	}
 
-	var unicodeCount = 0;
+var defaultStatus = function () {
+		status.status_text = 'Working from home';
+		status.status_emoji = ':house_with_garden:';
+}
+
+var getEmojiLength = function (text) {
+	var emojiLength = 0;
 	for (var i = 0; i < text.length; i += 1)
 	{
-		if (text.codePointAt(i) > 255 && unicodeCount < 2)
+		if (text.codePointAt(i) > 255)
 		{
-			unicodeCount += 1;
+			emojiLength += 1;
 		}
 		else
 		{
 			break;
 		}
 	}
-	return unicodeCount;
+
+	return emojiLength;
 }
 
-var getStatusEmojiAndText = function (text, unicodeCount) {
-	var statusEmoji = '';
-	var statusText = '';
-	if (text.codePointAt(0) > 255)
+var setStatusEmojiAndText = function (text) {
+	if (text === 'clear')
 	{
-		statusEmoji = text.substr(0, unicodeCount);
-		if (text.substr(unicodeCount, 1) === ' ')
-		{
-			statusText = text.substring(unicodeCount + 1);
-		}
-		else
-		{
-			statusText = text.substring(unicodeCount);
-		}
-		if (statusText === '')
-		{
-			statusText = 'Working from home';
-		}
+		status.status_text = '';
+		status.status_emoji = '';
 	}
 	else
 	{
-		// Status Emoji not specified at beginning of text or no emoji at all, return empty strings
+		var messageBegin = getEmojiLength(text);
+		if (text.codePointAt(0) > 255)
+		{
+			status.status_emoji = ':'.concat(emoji.which(text.substr(0, messageBegin)), ':');
+			if (text.substr(messageBegin, 1) === ' ')
+			{
+				messageBegin += 1;
+			}
+		}
+		if (text.substring(messageBegin).length > 0)
+		{
+			status.status_text = text.substring(messageBegin);
+		}
 	}
-	return { statusEmoji: statusEmoji, statusText: statusText };
 }
 
 module.exports = (text, token) => {
-	var encodedJSON = 'token='.concat(token, '&profile=', encodeURIComponent('{"status_text":"'.concat('', '","status_emoji":"', '', '"}')));
-	if (text !== 'clear' && text !== '')
-	{
-		var unicodeCount = parseText(text);
-		var statusEmoji = getStatusEmojiAndText(text, unicodeCount).statusEmoji;
-		var statusText = getStatusEmojiAndText(text, unicodeCount).statusText;
-		if (statusEmoji !== '')
-		{
-			encodedJSON = 'token='.concat(token, '&profile=', encodeURIComponent('{"status_text":"'.concat(statusText, '","status_emoji":":', emoji.which(statusEmoji), ':"}')));
-		}
-	}
+	setStatusEmojiAndText(text);
+	var encodedJSON = 'token='.concat(token, '&profile=', encodeURIComponent(JSON.stringify(status)));
+	defaultStatus();
 	return slackApi.sendResponse('slack.com/api/users.profile.set', encodedJSON);
 };
