@@ -73,10 +73,6 @@
         "eqeqeq": "error",
         "func-call-spacing": "error",
         "func-name-matching": "error",
-        "func-style": [
-            "error",
-            "expression"
-        ],
         "generator-star-spacing": "error",
         "global-require": "error",
         "guard-for-in": "error",
@@ -107,7 +103,6 @@
         "max-lines": "error",
         "max-nested-callbacks": "error",
         "max-params": "error",
-        "max-statements": "error",
         "max-statements-per-line": "error",
         "multiline-ternary": [
             "error",
@@ -261,7 +256,6 @@
         ],
         "radix": "error",
         "require-await": "error",
-        "require-jsdoc": "error",
         "rest-spread-spacing": "error",
         "semi": "off",
         "semi-spacing": "error",

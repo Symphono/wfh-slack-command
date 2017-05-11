@@ -1,7 +1,7 @@
 var slackApi = require('./slack-api');
 var emoji = require('node-emoji');
 
-var getDefaultStatus = function () {
+function getDefaultStatus() {
 	var status = {
 		status_text: 'Working from home',
 		status_emoji: ':house_with_garden:'
@@ -9,7 +9,7 @@ var getDefaultStatus = function () {
 	return status;
 }
 
-var getBlankStatus = function () {
+function getBlankStatus() {
 	var blankStatus = {
 		status_text: '',
 		status_emoji: ''
@@ -17,11 +17,15 @@ var getBlankStatus = function () {
 	return blankStatus;
 }
 
-var getEmojiLength = function (text) {
+function isEmojiChar(character) {
+	return character > 255;
+}
+
+function getEmojiLength(text) {
 	var emojiLength = 0;
 	for (var i = 0; i < text.length; i += 1)
 	{
-		if (text.codePointAt(i) > 255)
+		if (isEmojiChar(text.codePointAt(i)))
 		{
 			emojiLength += 1;
 		}
@@ -34,16 +38,14 @@ var getEmojiLength = function (text) {
 	return emojiLength;
 }
 
-var buildStatusJSON = function (text) {
+function buildStatusJSON (text) {
 	if (text === 'clear')
 	{
 		return getBlankStatus();
 	}
-
 	var status = getDefaultStatus();
 	var messageBegin = getEmojiLength(text);
-	if (text.codePointAt(0) > 255)
-	{
+	if (isEmojiChar(text.codePointAt(0))) {
 		status.status_emoji = ':'.concat(emoji.which(text.substr(0, messageBegin)), ':');
 		if (text.substr(messageBegin, 1) === ' ')
 		{
