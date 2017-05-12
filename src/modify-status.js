@@ -46,7 +46,7 @@ function buildStatusJSON (text) {
 	var status = getDefaultStatus();
 	var messageBegin = getEmojiLength(text);
 	if (isEmojiChar(text.codePointAt(0))) {
-		status.status_emoji = ':'.concat(emoji.which(text.substr(0, messageBegin)), ':');
+		status.status_emoji = `:${ emoji.which(text.substr(0, messageBegin)) }:`;
 		if (text.substr(messageBegin, 1) === ' ')
 		{
 			messageBegin += 1;
@@ -61,6 +61,6 @@ function buildStatusJSON (text) {
 
 module.exports = (text, token) => {
 	var status = buildStatusJSON(text);
-	var encodedJSON = 'token='.concat(token, '&profile=', encodeURIComponent(JSON.stringify(status)));
-	return slackApi.sendResponse('slack.com/api/users.profile.set', encodedJSON);
+	var encodedJSON = `token=${ token }&profile=${ encodeURIComponent(JSON.stringify(status)) }`;
+	return slackApi.setStatus(encodedJSON);
 };

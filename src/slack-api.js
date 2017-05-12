@@ -25,5 +25,12 @@ module.exports = {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ text })
 		});
+	},
+	setStatus: function(text) {
+		return fetch('slack.com/api/users.profile.set', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body: text
+		});
 	}
 };
