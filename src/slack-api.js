@@ -4,7 +4,7 @@ var queryString = require('query-string');
 module.exports = {
 	getUserInfo: function(userId) {
 		var params = queryString.stringify({
-			token: process.env.SLACK_API_TOKEN,
+			token: process.env.SLACK_API_KEY,
 			user: userId
 		});
 
@@ -27,7 +27,7 @@ module.exports = {
 		});
 	},
 	setStatus: function(text) {
-		return fetch('slack.com/api/users.profile.set', {
+		return fetch('https://slack.com/api/users.profile.set', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 			body: text
